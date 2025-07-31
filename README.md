@@ -30,6 +30,7 @@ UDP Hole Punchingは、NATやファイアウォールの背後にある2つの�
 - **ビルドシステム**: CMake
 - **ネットワーク**: Berkeley Sockets (POSIX)
 - **プロトコル**: STUN ([RFC 5389](https://datatracker.ietf.org/doc/html/rfc5389)), 独自Rendezvousプロトコル
+- **ライブラリ方針**: 学習目的のため、libwebrtc等の大規模ライブラリは使用せず、Boost等の標準的なライブラリのみを使用
 
 ## プロジェクト構成
 
@@ -45,8 +46,10 @@ udp_hole_punching/
 ## 学習ポイント
 
 1. **STUNプロトコル**: NAT環境での自己アドレス発見
-2. **NAT Traversal**: ファイアウォール・NAT越え技術
-3. **P2P通信**: サーバーレス直接通信の実現
+2. **ソケットプログラミング**: UDPソケットの非同期処理
+3. **NAT Traversal**: ファイアウォール・NAT越え技術
+4. **P2P通信**: サーバーレス直接通信の実現
+5. **プロトコル実装**: 既存ライブラリに依存しない低レベル実装の理解
 
 ## 参考文献
 
