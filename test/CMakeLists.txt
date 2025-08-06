@@ -16,7 +16,9 @@ else()
 endif()
 
 # STUNパケットテスト
-add_executable(test_stun_packet test_stun_packet.cpp)
+add_executable(test_stun_packet test_stun_packet.cpp
+    ../src/stun_packet.cpp
+)
 target_link_libraries(test_stun_packet 
     udp_hole_punching_lib 
     gtest_main
