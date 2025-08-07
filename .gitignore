@@ -58,3 +58,8 @@ Thumbs.db
 *.log
 core
 vgcore.*
+
+# Test executables
+test/test_udp_socket
+test/test_stun_packet
+test/test_endian

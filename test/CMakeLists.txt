@@ -39,6 +39,18 @@ target_link_libraries(test_endian
 )
 gtest_discover_tests(test_endian)
 
+# UDPソケットテスト
+add_executable(test_udp_socket test_udp_socket.cpp
+    ../src/udp_socket.cpp
+)
+target_link_libraries(test_udp_socket 
+    udp_hole_punching_lib 
+    gtest_main
+    gtest
+    pthread
+)
+gtest_discover_tests(test_udp_socket)
+
 # 全テストを実行するカスタムターゲット
 add_custom_target(run_all_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
