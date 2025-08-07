@@ -27,6 +27,18 @@ target_link_libraries(test_stun_packet
 )
 gtest_discover_tests(test_stun_packet)
 
+# エンディアンヘルパーテスト
+add_executable(test_endian helper/test_endian.cpp
+    ../src/helper/endian.cpp
+)
+target_link_libraries(test_endian 
+    udp_hole_punching_lib 
+    gtest_main
+    gtest
+    pthread
+)
+gtest_discover_tests(test_endian)
+
 # 全テストを実行するカスタムターゲット
 add_custom_target(run_all_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
