@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# 開発環境セットアップチェック用pre-commitフック
+# commit-msgフックが正しく設定されているかチェック
+
+COMMIT_MSG_HOOK=".git/hooks/commit-msg"
+SOURCE_HOOK="scripts/hooks/commit-msg"
+
+# commit-msgフックが存在しない場合
+if [ ! -f "$COMMIT_MSG_HOOK" ]; then
+    echo "❌ 開発環境が正しく設定されていません！"
+    echo ""
+    echo "📋 セットアップが必要です:"
+    echo "  1. フックのコピー:"
+    echo "     cp scripts/hooks/commit-msg .git/hooks/commit-msg"
+    echo "     chmod +x .git/hooks/commit-msg"
+    echo ""
+    echo "  2. 詳細な手順はDEVELOPMENT.mdを参照してください"
+    echo ""
+    echo "🔧 自動セットアップを実行しますか? [y/N]"
+    read -r response
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        echo "🔄 自動セットアップを実行中..."
+        if [ -f "$SOURCE_HOOK" ]; then
+            cp "$SOURCE_HOOK" "$COMMIT_MSG_HOOK"
+            chmod +x "$COMMIT_MSG_HOOK"
+            echo "✅ セットアップ完了！commit-msgフックが有効になりました"
+        else
+            echo "❌ エラー: $SOURCE_HOOK が見つかりません"
+            echo "   手動でDEVELOPMENT.mdの手順に従ってセットアップしてください"
+            exit 1
+        fi
+        echo "📖 今後の詳細はDEVELOPMENT.mdを必ず確認してください"
+        exit 0
+    else
+        echo "❌ セットアップをキャンセルしました"
+        echo "   手動でセットアップしてからコミットしてください"
+        exit 1
+    fi
+fi
+
+# フックが古い場合のチェック
+if [ "$SOURCE_HOOK" -nt "$COMMIT_MSG_HOOK" ]; then
+    echo "⚠️  commit-msgフックが古いバージョンです"
+    echo "🔄 最新版に更新しますか? [y/N]"
+    read -r response
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        cp "$SOURCE_HOOK" "$COMMIT_MSG_HOOK"
+        chmod +x "$COMMIT_MSG_HOOK"
+        echo "✅ フックを最新版に更新しました"
+    fi
+fi
+
+echo "✅ 開発環境の設定OK"
+exit 0

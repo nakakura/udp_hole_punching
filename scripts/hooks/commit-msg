@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Conventional Commits形式のコミットメッセージを検証するフック
+# 参考: https://www.conventionalcommits.org/
+
+commit_regex='^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,72}$'
+merge_regex='^Merge .+'
+
+commit_msg_file=$1
+commit_msg=$(cat $commit_msg_file)
+
+# マージコミットは除外
+if echo "$commit_msg" | grep -qE "$merge_regex"; then
+    exit 0
+fi
+
+# Conventional Commits形式をチェック
+if ! echo "$commit_msg" | grep -qE "$commit_regex"; then
+    echo "❌ コミットメッセージがConventional Commits形式に従っていません"
+    echo ""
+    echo "正しい形式: <type>[optional scope]: <description>"
+    echo ""
+    echo "許可されるtype:"
+    echo "  feat:     新機能の追加"
+    echo "  fix:      バグ修正"
+    echo "  docs:     ドキュメントの変更"
+    echo "  style:    コードフォーマット（機能に影響しない）"
+    echo "  refactor: リファクタリング"
+    echo "  test:     テストの追加・修正"
+    echo "  chore:    ビルドプロセスやツールの変更"
+    echo "  perf:     パフォーマンス改善"
+    echo "  ci:       CI設定の変更"
+    echo "  build:    ビルドシステムの変更"
+    echo "  revert:   コミットの取り消し"
+    echo ""
+    echo "例:"
+    echo "  feat(udp): UDPソケットのテスト機能を追加"
+    echo "  fix(test): パケット受信のタイムアウト問題を修正"
+    echo "  docs: READMEにビルド手順を追加"
+    echo ""
+    echo "現在のコミットメッセージ:"
+    echo "  $commit_msg"
+    exit 1
+fi
+
+# 72文字制限チェック
+first_line=$(echo "$commit_msg" | head -n1)
+if [ ${#first_line} -gt 72 ]; then
+    echo "❌ コミットメッセージの1行目が72文字を超えています (${#first_line}文字)"
+    echo "現在: $first_line"
+    exit 1
+fi
+
+echo "✅ コミットメッセージが承認されました"
+exit 0
