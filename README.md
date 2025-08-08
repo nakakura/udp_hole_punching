@@ -7,6 +7,40 @@ UDP Hole Punching技術の学習を目的としたC++実装プロジェクトで
 UDP Hole Punchingは、NATやファイアウォールの背後にある2つのクライアント間で直接的なUDP通信を確立するための技術です。
 これは自身の学習用の実装です。
 
+## 開発環境
+
+### 必要なツール
+- **C++コンパイラ**: GCC 9+ または Clang 10+
+- **CMake**: 3.16+
+- **開発ツール**: clang-format, clang-tidy, pre-commit
+- **テストフレームワーク**: Google Test
+
+### セットアップ（自動）
+```bash
+./setup-dev.sh
+```
+
+### セットアップ（手動）
+```bash
+# ビルド
+mkdir build && cd build
+cmake ..
+make
+
+# テスト実行
+make test
+
+# コードフォーマット（Google C++スタイル）
+clang-format --style=file -i src/*.cpp include/*.h
+
+# 静的解析
+clang-tidy src/*.cpp
+
+# pre-commitフック（推奨）
+pre-commit install
+pre-commit run --all-files
+```
+
 ## 開発方針
 
 ### Step 1: STUNクライアント実装

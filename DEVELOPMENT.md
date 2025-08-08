@@ -37,7 +37,7 @@
    ```bash
    # 正しい形式でテスト
    echo "feat(test): 新しいテスト機能を追加" | .git/hooks/commit-msg /dev/stdin
-   
+
    # 間違った形式でテスト
    echo "間違ったコミットメッセージ" | .git/hooks/commit-msg /dev/stdin
    ```

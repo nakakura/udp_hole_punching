@@ -24,5 +24,5 @@ add_subdirectory(test)
 
 # examplesディレクトリがある場合のみ追加
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/examples/CMakeLists.txt)
-    add_subdirectory(examples)
+  add_subdirectory(examples)
 endif()
