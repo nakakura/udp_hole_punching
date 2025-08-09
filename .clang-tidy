@@ -1,14 +1,32 @@
 # clang-tidy設定ファイル
 # 静的解析ルール（システムヘッダー除外版）
 ---
+# コンパイルデータベースを使用（compile_commands.jsonから設定を読み込み）
+UseColor: true
+User: 'nakakura'
+
 Checks: >
   -*,
-  readability-identifier-naming,
-  cppcoreguidelines-special-member-functions,
-  bugprone-unused-return-value,
-  cppcoreguidelines-owning-memory,
-  modernize-use-auto,
-  readability-braces-around-statements
+  bugprone-*,
+  cert-*,
+  clang-analyzer-*,
+  concurrency-*,
+  cppcoreguidelines-*,
+  google-*,
+  hicpp-*,
+  llvm-*,
+  misc-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -bugprone-easily-swappable-parameters,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-macro-usage,
+  -readability-magic-numbers,
+  -altera-unroll-loops,
+  -readability-identifier-length,
+  -readability-convert-member-functions-to-static
 
 WarningsAsErrors: ''
 # プロジェクトファイルのみ対象（システムヘッダー除外）

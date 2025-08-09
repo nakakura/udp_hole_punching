@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HELPER_ENDIAN_H
+#define HELPER_ENDIAN_H
 
 #include <cstdint>
 
@@ -17,7 +18,7 @@ namespace endian {
  * @param bytes ホストバイトオーダーのバイト配列（最低2バイト必要）
  * @return ネットワークバイトオーダー（ビッグエンディアン）の16bit値
  */
-uint16_t host_to_network_16(const uint8_t* bytes);
+auto HostToNetwork16(const uint8_t* bytes) -> uint16_t;
 
 /**
  * 32bit値をホストバイトオーダーからネットワークバイトオーダーに変換
@@ -27,7 +28,7 @@ uint16_t host_to_network_16(const uint8_t* bytes);
  * @param bytes ホストバイトオーダーのバイト配列（最低4バイト必要）
  * @return ネットワークバイトオーダー（ビッグエンディアン）の32bit値
  */
-uint32_t host_to_network_32(const uint8_t* bytes);
+auto HostToNetwork32(const uint8_t* bytes) -> uint32_t;
 
 /**
  * バイト配列から16bit値をネットワークバイトオーダーで読み取り
@@ -37,7 +38,7 @@ uint32_t host_to_network_32(const uint8_t* bytes);
  * @param bytes ネットワークバイトオーダーのバイト配列（最低2バイト必要）
  * @return ホストバイトオーダーの16bit値
  */
-uint16_t network_to_host_16(const uint8_t* bytes);
+auto NetworkToHost16(const uint8_t* bytes) -> uint16_t;
 
 /**
  * バイト配列から32bit値をネットワークバイトオーダーで読み取り
@@ -47,5 +48,7 @@ uint16_t network_to_host_16(const uint8_t* bytes);
  * @param bytes ネットワークバイトオーダーのバイト配列（最低4バイト必要）
  * @return ホストバイトオーダーの32bit値
  */
-uint32_t network_to_host_32(const uint8_t* bytes);
+auto NetworkToHost32(const uint8_t* bytes) -> uint32_t;
 }  // namespace endian
+
+#endif  // HELPER_ENDIAN_H

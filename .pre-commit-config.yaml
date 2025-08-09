@@ -13,11 +13,11 @@ repos:
         files: \.(c|cc|cxx|cpp|frag|glsl|h|hpp|hxx|ih|ispc|ipp|java|js|m|proto|vert)$
         exclude: ^(build/|\.git/)
 
-      # clang-tidy: 重要な静的解析のみ（軽量版）- 一時的に無効化
-      # - id: clang-tidy
-      #   args: [--config-file=.clang-tidy]
-      #   files: \.(cpp|h|hpp)$
-      #   exclude: ^(build/|test/|src/dummy\.cpp|src/socket\.cpp|\.git/)
+      # clang-tidy: 重要な静的解析のみ（軽量版）
+      - id: clang-tidy
+        args: [--config-file=.clang-tidy]
+        files: \.(cpp|h|hpp)$
+        exclude: ^(build/|test/|src/dummy\.cpp|src/socket\.cpp|\.git/)
 
   # 一般的なコード品質チェック
   - repo: https://github.com/pre-commit/pre-commit-hooks

@@ -25,8 +25,7 @@ class STUNPacketTest : public ::testing::Test {
  * RFC 5389: STUNメッセージは最低20バイト（ヘッダーのみ）
  */
 TEST_F(STUNPacketTest, BindingRequestHasCorrectSize) {
-  StunPacketBuilder builder;
-  auto packet = builder.CreateBindingRequest();
+  auto packet = StunPacketBuilder::CreateBindingRequest();
 
   // 最小サイズは20バイト（ヘッダーのみ）
   EXPECT_EQ(packet.size(), 20);
@@ -39,11 +38,10 @@ TEST_F(STUNPacketTest, BindingRequestHasCorrectSize) {
  */
 TEST_F(STUNPacketTest, BindingRequestHasCorrectMessageType) {
   // 期待する実装:
-  StunPacketBuilder builder;
-  auto packet = builder.CreateBindingRequest();
+  auto packet = StunPacketBuilder::CreateBindingRequest();
 
   // Message Type (0-1バイト目): Binding Request = 0x0001
-  uint16_t message_type = (packet[0] << 8) | packet[1];
+  uint16_t message_type = (static_cast<uint16_t>(packet[0]) << 8U) | packet[1];
   EXPECT_EQ(message_type, 0x0001);
 }
 
@@ -54,23 +52,22 @@ TEST_F(STUNPacketTest, BindingRequestHasCorrectMessageType) {
  * Message Typeのビット構造: M11-M0 (Method), C1-C0 (Class)
  */
 TEST_F(STUNPacketTest, BindingRequestHasCorrectClassBits) {
-  StunPacketBuilder builder;
-  auto packet = builder.CreateBindingRequest();
+  auto packet = StunPacketBuilder::CreateBindingRequest();
 
   // Message Type (0-1バイト目)を取得
-  uint16_t message_type = (packet[0] << 8) | packet[1];
+  uint16_t message_type = (static_cast<uint16_t>(packet[0]) << 8U) | packet[1];
 
   // クラスビット (C1, C0) を抽出
   // C1 = bit 4, C0 = bit 8 (RFC 5389のビット配置)
-  uint8_t c1 = (message_type >> 4) & 0x01;  // bit 4
-  uint8_t c0 = (message_type >> 8) & 0x01;  // bit 8
+  uint8_t c1 = (message_type >> 4U) & 0x01U;  // bit 4
+  uint8_t c0 = (message_type >> 8U) & 0x01U;  // bit 8
 
   // Request クラスは 0b00 (C1=0, C0=0)
   EXPECT_EQ(c1, 0) << "C1 bit should be 0 for Request class";
   EXPECT_EQ(c0, 0) << "C0 bit should be 0 for Request class";
 
   // 全体のクラス値も確認
-  uint8_t class_value = (c1 << 1) | c0;
+  uint8_t class_value = (c1 << 1U) | c0;
   EXPECT_EQ(class_value, 0x00) << "Request class should be 0b00";
 }
 
@@ -81,12 +78,12 @@ TEST_F(STUNPacketTest, BindingRequestHasCorrectClassBits) {
  */
 TEST_F(STUNPacketTest, BindingRequestHasMagicCookie) {
   // 期待する実装:
-  StunPacketBuilder builder;
-  auto packet = builder.CreateBindingRequest();
+  auto packet = StunPacketBuilder::CreateBindingRequest();
 
   // Magic Cookie (4-7バイト目): 0x2112A442
-  uint32_t magic_cookie =
-      (packet[4] << 24) | (packet[5] << 16) | (packet[6] << 8) | packet[7];
+  uint32_t magic_cookie = (static_cast<uint32_t>(packet[4]) << 24U) |
+                          (static_cast<uint32_t>(packet[5]) << 16U) |
+                          (static_cast<uint32_t>(packet[6]) << 8U) | packet[7];
   EXPECT_EQ(magic_cookie, 0x2112A442);
 }
 
@@ -97,11 +94,11 @@ TEST_F(STUNPacketTest, BindingRequestHasMagicCookie) {
  */
 TEST_F(STUNPacketTest, BindingRequestHasCorrectMessageLength) {
   // 期待する実装:
-  StunPacketBuilder builder;
-  auto packet = builder.CreateBindingRequest();
+  auto packet = StunPacketBuilder::CreateBindingRequest();
 
   // Message Length (2-3バイト目): 0（ヘッダーのみの場合）
-  uint16_t message_length = (packet[2] << 8) | packet[3];
+  uint16_t message_length =
+      (static_cast<uint16_t>(packet[2]) << 8U) | packet[3];
   EXPECT_EQ(message_length, 0);
 }
 
@@ -110,9 +107,8 @@ TEST_F(STUNPacketTest, BindingRequestHasCorrectMessageLength) {
  */
 TEST_F(STUNPacketTest, TransactionIdUniqueness) {
   // 期待する実装:
-  StunPacketBuilder builder;
-  auto packet1 = builder.CreateBindingRequest();
-  auto packet2 = builder.CreateBindingRequest();
+  auto packet1 = StunPacketBuilder::CreateBindingRequest();
+  auto packet2 = StunPacketBuilder::CreateBindingRequest();
 
   // Transaction IDが異なることを確認 (8-19バイト)
   bool different = false;

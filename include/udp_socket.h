@@ -1,7 +1,12 @@
-#pragma once
+#ifndef UDP_SOCKET_H
+#define UDP_SOCKET_H
 
+#include <sys/socket.h>
+#include <sys/types.h>
 #include <uv.h>
 
+#include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -26,19 +31,27 @@ class UDPSocket {
    */
   ~UDPSocket();
 
+  // Rule of Five: コピー・ムーブを明示的に削除
+  // UDPSocketはlibuvリソースを管理するRAIIクラスのため、
+  // コピーやムーブは危険（重複解放やリソース競合の可能性）
+  UDPSocket(const UDPSocket&) = delete;
+  auto operator=(const UDPSocket&) -> UDPSocket& = delete;
+  UDPSocket(UDPSocket&&) = delete;
+  auto operator=(UDPSocket&&) -> UDPSocket& = delete;
+
   /**
    * ソケットが正常に作成されているかチェック
    *
    * @return true: ソケット作成済み, false: 作成失敗または未作成
    */
-  bool IsValid() const;
+  auto IsValid() const -> bool;
 
   /**
    * ローカルポート番号を取得
    *
    * @return ローカルポート番号（0の場合は取得失敗）
    */
-  int GetLocalPort() const;
+  auto GetLocalPort() const -> int;
 
   /**
    * UDPパケットを指定したアドレスに送信
@@ -48,8 +61,8 @@ class UDPSocket {
    * @param port 送信先ポート番号
    * @return true: 送信成功, false: 送信失敗
    */
-  bool SendTo(const std::vector<uint8_t>& data, const std::string& ip,
-              int port);
+  auto SendTo(const std::vector<uint8_t>& data, const std::string& ip,
+              int port) -> bool;
 
   /**
    * UDPパケットを受信（タイムアウト付き）
@@ -60,8 +73,8 @@ class UDPSocket {
    * @param timeout_ms タイムアウト（ミリ秒）
    * @return true: 受信成功, false: 受信失敗またはタイムアウト
    */
-  bool ReceiveFrom(std::vector<uint8_t>& data, std::string& sender_ip,
-                   int& sender_port, int timeout_ms);
+  auto ReceiveFrom(std::vector<uint8_t>& data, std::string& sender_ip,
+                   int& sender_port, int timeout_ms) -> bool;
 
  private:
   std::unique_ptr<uv_loop_t> loop_;
@@ -84,8 +97,13 @@ class UDPSocket {
   };
 
   static void OnSendComplete(uv_udp_send_t* req, int status);
-  static void OnReceive(uv_udp_t* handle, ssize_t nread, const uv_buf_t* buf,
-                        const struct sockaddr* addr, unsigned flags);
-  static void AllocBuffer(uv_handle_t* handle, size_t suggested_size,
-                          uv_buf_t* buf);
+  static void OnReceive(
+      uv_udp_t* handle, ssize_t nread,
+      const uv_buf_t* buf,  // NOLINT(misc-include-cleaner) libuv公式API
+      const struct sockaddr* addr, unsigned flags);
+  static void AllocBuffer(
+      uv_handle_t* handle, size_t suggested_size,
+      uv_buf_t* buf);  // NOLINT(misc-include-cleaner) libuv公式API
 };
+
+#endif  // UDP_SOCKET_H
