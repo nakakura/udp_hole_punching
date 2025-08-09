@@ -1,0 +1,73 @@
+# pre-commit configuration for UDP Hole Punching project
+# Google C++ Style Guide準拠の自動チェック・フォーマット
+# https://pre-commit.com/
+
+repos:
+  # C/C++フォーマッター (Google Style Guide準拠)
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.3.5
+    hooks:
+      # clang-format: Google C++スタイルでフォーマット
+      - id: clang-format
+        args: [--style=file]
+        files: \.(c|cc|cxx|cpp|frag|glsl|h|hpp|hxx|ih|ispc|ipp|java|js|m|proto|vert)$
+        exclude: ^(build/|\.git/)
+
+      # clang-tidy: 重要な静的解析のみ（軽量版）
+      - id: clang-tidy
+        args: [--config-file=.clang-tidy]
+        files: \.(cpp|h|hpp)$
+        exclude: ^(build/|test/|src/dummy\.cpp|src/socket\.cpp|\.git/)
+
+  # 一般的なコード品質チェック
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      # ファイル形式チェック
+      - id: trailing-whitespace        # 行末空白除去
+        exclude: \.(md|rst)$
+      - id: end-of-file-fixer         # ファイル末尾改行統一
+      - id: check-added-large-files   # 大容量ファイルチェック
+        args: ['--maxkb=500']
+      - id: check-case-conflict       # ファイル名大文字小文字競合チェック
+      - id: check-merge-conflict      # マージコンフリクトマーカーチェック
+      - id: check-yaml                # YAML構文チェック
+      - id: check-json                # JSON構文チェック
+
+      # CMake関連
+      - id: check-yaml
+        files: \.ya?ml$
+      - id: check-toml
+
+  # CMakeファイルフォーマット
+  - repo: https://github.com/cheshirekow/cmake-format-precommit
+    rev: v0.6.13
+    hooks:
+      - id: cmake-format
+        additional_dependencies: [pyyaml]
+        files: (CMakeLists\.txt|\.cmake)$
+
+  # Markdownリンター (ドキュメント品質向上) - 一時的に無効化
+  # - repo: https://github.com/igorshubovych/markdownlint-cli
+  #   rev: v0.35.0
+  #   hooks:
+  #     - id: markdownlint
+  #       args: [--fix]
+  #       files: \.md$
+  #       exclude: ^(build/|\.git/)
+
+# pre-commit実行設定
+default_stages: [commit]
+fail_fast: false  # エラーが発生しても他のフックも実行
+
+# 除外パターン (全フック共通)
+exclude: |
+  (?x)^(
+    build/.*|           # ビルド成果物
+    \.git/.*|          # Git内部ファイル
+    .*\.o|             # オブジェクトファイル
+    .*\.so|            # 共有ライブラリ
+    .*\.a|             # 静的ライブラリ
+    CMakeFiles/.*|     # CMake生成ファイル
+    Testing/.*         # CTestファイル
+  )$

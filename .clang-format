@@ -1,0 +1,134 @@
+# Google C++ Style Guide準拠のclang-format設定ファイル
+# https://google.github.io/styleguide/cppguide.html
+---
+Language: Cpp
+BasedOnStyle: Google
+
+# ==== インデント設定 (Google標準) ====
+IndentWidth: 2                    # Google: 2スペースインデント
+TabWidth: 2                       # タブ幅も2に統一
+UseTab: Never                     # スペースのみ使用
+ColumnLimit: 80                   # Google: 80文字制限
+
+# ==== アクセス修飾子 (Google標準) ====
+AccessModifierOffset: -1          # Google: -1スペースオフセット
+
+# ==== ラムダ式設定 (Google標準) ====
+LambdaBodyIndentation: Signature  # Google: シグネチャベースインデント
+AllowShortLambdasOnASingleLine: All  # Google: すべての短いラムダを1行許可
+
+# ==== 継続行インデント (Google標準) ====
+ContinuationIndentWidth: 4        # Google: 継続行は4スペース
+ConstructorInitializerIndentWidth: 4  # コンストラクタ初期化リスト
+IndentCaseLabels: true           # switch文のcaseをインデント
+IndentGotoLabels: true           # gotoラベルをインデント
+IndentPPDirectives: None         # プリプロセッサディレクティブはインデントしない
+IndentWrappedFunctionNames: false # 折り返し関数名はインデントしない
+IndentAccessModifiers: false     # アクセス修飾子はインデントしない
+
+# ==== ブレース設定 (Google標準) ====
+BreakBeforeBraces: Attach        # Google: ブレースは同じ行
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: false
+  AfterControlStatement: Never
+  AfterEnum: false
+  AfterFunction: false
+  AfterNamespace: false
+  BeforeCatch: false
+  BeforeElse: false
+  BeforeLambdaBody: false        # ラムダボディのブレースは同じ行
+  BeforeWhile: false
+  IndentBraces: false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+
+# ==== 関数・制御文設定 (Google標準) ====
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortFunctionsOnASingleLine: All        # Google: すべての短い関数を1行許可
+AllowShortIfStatementsOnASingleLine: WithoutElse  # Google: elseがないifのみ1行許可
+AllowShortLoopsOnASingleLine: true           # Google: 短いループは1行許可
+AllowShortCaseLabelsOnASingleLine: false     # case文は1行にしない
+AllowShortBlocksOnASingleLine: Never         # ブロックは1行にしない
+AllowShortEnumsOnASingleLine: true           # 短いenumは1行許可
+
+# ==== スペース設定 (Google標準) ====
+SpaceAfterCStyleCast: false      # C形式キャスト後にスペースなし
+SpaceAfterLogicalNot: false      # !演算子後にスペースなし
+SpaceAfterTemplateKeyword: true  # template後にスペース
+SpaceBeforeParens: ControlStatements  # 制御文の前のみスペース
+SpaceInEmptyParentheses: false   # 空の括弧内にスペースなし
+SpacesInParentheses: false       # 括弧内にスペースなし
+SpacesInSquareBrackets: false    # 角括弧内にスペースなし
+SpaceBeforeAssignmentOperators: true     # 代入演算子前にスペース
+SpaceBeforeCpp11BracedList: false        # C++11の初期化リスト前にスペースなし
+SpaceBeforeCtorInitializerColon: true    # コンストラクタ初期化リストのコロン前にスペース
+SpaceBeforeInheritanceColon: true        # 継承のコロン前にスペース
+SpaceBeforeRangeBasedForLoopColon: true  # range-forのコロン前にスペース
+
+# ==== ポインタと参照 (Google標準) ====
+PointerAlignment: Left           # Google: int* ptr スタイル
+DerivePointerAlignment: false    # Google: 一貫したポインタ位置を強制
+
+# ==== 改行設定 (Google標準) ====
+AlwaysBreakAfterReturnType: None           # 戻り値型で改行しない
+AlwaysBreakBeforeMultilineStrings: true    # Google: 複数行文字列前で改行
+BreakBeforeBinaryOperators: None           # 二項演算子前で改行しない
+BreakBeforeTernaryOperators: true          # 三項演算子前で改行
+BreakStringLiterals: true                  # 文字列リテラルを改行
+BreakConstructorInitializers: BeforeColon  # Google: コンストラクタ初期化リストはコロン前で改行
+BreakInheritanceList: BeforeColon          # 継承リストはコロン前で改行
+
+# ==== インクルード設定 (Google標準) ====
+SortIncludes: CaseSensitive      # Google: 大文字小文字を考慮してソート
+IncludeBlocks: Regroup           # インクルードブロックを再グループ化
+IncludeCategories:               # Google推奨のインクルード順序
+  - Regex: '^<ext/.*\.h>'
+    Priority: 2
+    SortPriority: 0
+    CaseSensitive: false
+  - Regex: '^<.*\.h>'
+    Priority: 1
+    SortPriority: 0
+    CaseSensitive: false
+  - Regex: '^<.*>'
+    Priority: 2
+    SortPriority: 0
+    CaseSensitive: false
+  - Regex: '.*'
+    Priority: 3
+    SortPriority: 0
+    CaseSensitive: false
+
+# ==== アライメント設定 (Google標準) ====
+AlignAfterOpenBracket: Align     # 開き括弧後をアライン
+AlignEscapedNewlines: Left       # Google: エスケープされた改行を左寄せ
+AlignOperands: Align             # オペランドをアライン
+AlignTrailingComments:
+  Kind: Always                   # 末尾コメントを常にアライン
+  OverEmptyLines: 0              # 空行を超えてアライメントしない
+
+# ==== パッキング設定 (Google標準) ====
+AllowAllArgumentsOnNextLine: true    # 引数をすべて次の行に配置可能
+BinPackArguments: true               # 引数をパッキング
+BinPackParameters: true            # パラメータをパッキング
+PackConstructorInitializers: NextLine  # コンストラクタ初期化リストは次の行
+
+# ==== ネームスペース設定 (Google標準) ====
+CompactNamespaces: false             # ネームスペースをコンパクトにしない
+NamespaceIndentation: None           # Google: ネームスペース内をインデントしない
+FixNamespaceComments: true           # ネームスペース終了コメントを自動修正
+
+# ==== 空行設定 (Google標準) ====
+KeepEmptyLinesAtTheStartOfBlocks: false    # ブロック開始の空行を削除
+MaxEmptyLinesToKeep: 1                     # 空行は最大1行まで
+
+# ==== コメント設定 (Google標準) ====
+ReflowComments: true              # コメントを常に再フロー
+CommentPragmas: '^ IWYU pragma:'     # IWYUプラグマを認識
+
+# ==== その他のGoogle標準設定 ====
+Standard: Auto                       # C++標準を自動検出
+Cpp11BracedListStyle: true          # C++11のbraced-list-styleを使用
+DisableFormat: false                # フォーマットを有効にする

@@ -8,6 +8,38 @@ set -e
 echo "🚀 UDP Hole Punching プロジェクト 開発環境セットアップ"
 echo "=================================================="
 
+# 0. 開発ツールのインストール
+echo "📦 開発ツールのインストール中..."
+
+# clang-format と clang-tidy のインストール
+if ! command -v clang-format &> /dev/null; then
+    echo "📥 clang-formatをインストール中..."
+    sudo apt update && sudo apt install -y clang-format
+    echo "✅ clang-formatをインストールしました"
+else
+    echo "✅ clang-formatは既にインストール済みです"
+fi
+
+if ! command -v clang-tidy &> /dev/null; then
+    echo "📥 clang-tidyをインストール中..."
+    sudo apt install -y clang-tidy
+    echo "✅ clang-tidyをインストールしました"
+else
+    echo "✅ clang-tidyは既にインストール済みです"
+fi
+
+# pre-commit のインストール
+if ! command -v pre-commit &> /dev/null; then
+    echo "📥 pre-commitをインストール中..."
+    # Ubuntu 24.04では外部管理環境のためaptでインストール
+    sudo apt install -y pre-commit
+    echo "✅ pre-commitをインストールしました"
+else
+    echo "✅ pre-commitは既にインストール済みです"
+fi
+
+echo ""
+
 # 1. commit-msgフックのセットアップ
 COMMIT_MSG_SOURCE="scripts/hooks/commit-msg"
 COMMIT_MSG_TARGET=".git/hooks/commit-msg"
@@ -51,7 +83,24 @@ if [ -f "$PRE_COMMIT_SOURCE" ]; then
     fi
 fi
 
-# 3. 動作確認
+# 3. pre-commit フレームワークのセットアップ
+echo ""
+echo "🔧 pre-commitフレームワークをセットアップ中..."
+if [ -f ".pre-commit-config.yaml" ]; then
+    pre-commit install
+    echo "✅ pre-commitフックがセットアップされました"
+
+    echo "🧪 pre-commitの動作確認中..."
+    if pre-commit run --all-files; then
+        echo "✅ pre-commitが正常に動作しています"
+    else
+        echo "⚠️  一部のファイルがフォーマットされました（正常な動作です）"
+    fi
+else
+    echo "❌ .pre-commit-config.yamlが見つかりません"
+fi
+
+# 4. 動作確認
 echo ""
 echo "🧪 フックの動作確認中..."
 if [ -f "$COMMIT_MSG_TARGET" ]; then
@@ -67,7 +116,7 @@ else
     exit 1
 fi
 
-# 4. 完了メッセージ
+# 5. 完了メッセージ
 echo ""
 echo "🎉 セットアップ完了！"
 echo ""
@@ -75,6 +124,9 @@ echo "📖 重要な情報:"
 echo "  • Conventional Commitsフォーマットでコミットしてください"
 echo "  • 詳細な開発手順はDEVELOPMENT.mdを確認してください"
 echo "  • テスト実行: make test または適切なビルドコマンド"
+echo "  • コードフォーマット: clang-format --style=file -i <ファイル名>"
+echo "  • 静的解析: clang-tidy <ファイル名>"
+echo "  • pre-commit手動実行: pre-commit run --all-files"
 echo ""
 echo "🔍 コミットメッセージ形式例:"
 echo "  feat(udp): 新しいUDP機能を追加"

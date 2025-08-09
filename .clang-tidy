@@ -1,0 +1,70 @@
+# clang-tidy設定ファイル
+# 静的解析ルール（システムヘッダー除外版）
+---
+# コンパイルデータベースを使用（compile_commands.jsonから設定を読み込み）
+UseColor: true
+User: 'nakakura'
+
+Checks: >
+  -*,
+  bugprone-*,
+  cert-*,
+  clang-analyzer-*,
+  concurrency-*,
+  cppcoreguidelines-*,
+  google-*,
+  hicpp-*,
+  llvm-*,
+  misc-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -bugprone-easily-swappable-parameters,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-macro-usage,
+  -readability-magic-numbers,
+  -altera-unroll-loops,
+  -readability-identifier-length,
+  -readability-convert-member-functions-to-static
+
+WarningsAsErrors: ''
+# プロジェクトファイルのみ対象（システムヘッダー除外）
+HeaderFilterRegex: '^((?!/usr/).)*$'
+FormatStyle: 'file'
+SystemHeaders: false
+CheckOptions:
+  # Google C++ Style Guide準拠の命名規則 (完全準拠版)
+  # https://google.github.io/styleguide/cppguide.html#Naming
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase                     # Google: PascalCase for classes
+  - key: readability-identifier-naming.FunctionCase
+    value: CamelCase                     # Google: PascalCase for functions
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case                    # Google: snake_case for variables
+  - key: readability-identifier-naming.ConstantCase
+    value: CamelCase                     # Google: kCamelCase for constants (kMaxSize)
+  - key: readability-identifier-naming.ConstantPrefix
+    value: k                             # Google: k prefix for constants
+  - key: readability-identifier-naming.MemberCase
+    value: lower_case                    # Google: snake_case for members
+  - key: readability-identifier-naming.MemberSuffix
+    value: _                             # Google: trailing underscore for members
+  - key: readability-identifier-naming.ParameterCase
+    value: lower_case                    # Google: snake_case for parameters
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase                     # Google: PascalCase for enums
+  - key: readability-identifier-naming.EnumConstantCase
+    value: CamelCase                     # Google: kCamelCase for enum values (kFirst)
+  - key: readability-identifier-naming.EnumConstantPrefix
+    value: k                             # Google: k prefix for enum constants
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case                    # Google: snake_case for namespaces
+  - key: readability-identifier-naming.StaticConstantCase
+    value: CamelCase                     # Google: kCamelCase for static constants
+  - key: readability-identifier-naming.StaticConstantPrefix
+    value: k                             # Google: k prefix for static constants
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: CamelCase                     # Google: kCamelCase for global constants
+  - key: readability-identifier-naming.GlobalConstantPrefix
+    value: k                             # Google: k prefix for global constants
