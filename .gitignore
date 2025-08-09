@@ -38,6 +38,9 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
+# CTest
+Testing/
+
 # IDEs
 .vscode/
 .idea/
