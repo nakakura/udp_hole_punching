@@ -1,8 +1,10 @@
 #include <gtest/gtest.h>
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
+#include "istun_packet.h"
 #include "stun_packet.h"
 
 /**
@@ -25,7 +27,8 @@ class STUNPacketTest : public ::testing::Test {
  * RFC 5389: STUNメッセージは最低20バイト（ヘッダーのみ）
  */
 TEST_F(STUNPacketTest, BindingRequestHasCorrectSize) {
-  auto packet = StunPacketBuilder::CreateBindingRequest();
+  STUNPacketBuilder builder;
+  auto packet = builder.CreateBindingRequest();
 
   // 最小サイズは20バイト（ヘッダーのみ）
   EXPECT_EQ(packet.size(), 20);
@@ -37,8 +40,8 @@ TEST_F(STUNPacketTest, BindingRequestHasCorrectSize) {
  * RFC 5389: Binding Request = 0x0001
  */
 TEST_F(STUNPacketTest, BindingRequestHasCorrectMessageType) {
-  // 期待する実装:
-  auto packet = StunPacketBuilder::CreateBindingRequest();
+  STUNPacketBuilder builder;
+  auto packet = builder.CreateBindingRequest();
 
   // Message Type (0-1バイト目): Binding Request = 0x0001
   uint16_t message_type = (static_cast<uint16_t>(packet[0]) << 8U) | packet[1];
@@ -52,7 +55,8 @@ TEST_F(STUNPacketTest, BindingRequestHasCorrectMessageType) {
  * Message Typeのビット構造: M11-M0 (Method), C1-C0 (Class)
  */
 TEST_F(STUNPacketTest, BindingRequestHasCorrectClassBits) {
-  auto packet = StunPacketBuilder::CreateBindingRequest();
+  STUNPacketBuilder builder;
+  auto packet = builder.CreateBindingRequest();
 
   // Message Type (0-1バイト目)を取得
   uint16_t message_type = (static_cast<uint16_t>(packet[0]) << 8U) | packet[1];
@@ -77,8 +81,8 @@ TEST_F(STUNPacketTest, BindingRequestHasCorrectClassBits) {
  * RFC 5389: Magic Cookie = 0x2112A442（4-7バイト目）
  */
 TEST_F(STUNPacketTest, BindingRequestHasMagicCookie) {
-  // 期待する実装:
-  auto packet = StunPacketBuilder::CreateBindingRequest();
+  STUNPacketBuilder builder;
+  auto packet = builder.CreateBindingRequest();
 
   // Magic Cookie (4-7バイト目): 0x2112A442
   uint32_t magic_cookie = (static_cast<uint32_t>(packet[4]) << 24U) |
@@ -93,8 +97,8 @@ TEST_F(STUNPacketTest, BindingRequestHasMagicCookie) {
  * RFC 5389: Message Length（2-3バイト目）= 0（属性なしの場合）
  */
 TEST_F(STUNPacketTest, BindingRequestHasCorrectMessageLength) {
-  // 期待する実装:
-  auto packet = StunPacketBuilder::CreateBindingRequest();
+  STUNPacketBuilder builder;
+  auto packet = builder.CreateBindingRequest();
 
   // Message Length (2-3バイト目): 0（ヘッダーのみの場合）
   uint16_t message_length =
@@ -106,9 +110,9 @@ TEST_F(STUNPacketTest, BindingRequestHasCorrectMessageLength) {
  * Transaction IDの一意性をテスト
  */
 TEST_F(STUNPacketTest, TransactionIdUniqueness) {
-  // 期待する実装:
-  auto packet1 = StunPacketBuilder::CreateBindingRequest();
-  auto packet2 = StunPacketBuilder::CreateBindingRequest();
+  STUNPacketBuilder builder;
+  auto packet1 = builder.CreateBindingRequest();
+  auto packet2 = builder.CreateBindingRequest();
 
   // Transaction IDが異なることを確認 (8-19バイト)
   bool different = false;
@@ -119,4 +123,16 @@ TEST_F(STUNPacketTest, TransactionIdUniqueness) {
     }
   }
   EXPECT_TRUE(different) << "Transaction IDが重複しています";
+}
+
+/**
+ * STUNPacketBuilderが型消去を利用して動作することを確認
+ */
+TEST_F(STUNPacketTest, TypeErasureWorksCorrectly) {
+  std::unique_ptr<ISTUNPacketBuilder> builder =
+      std::make_unique<STUNPacketBuilder>();
+  auto packet = builder->CreateBindingRequest();
+
+  // 最小サイズは20バイト（ヘッダーのみ）
+  EXPECT_EQ(packet.size(), 20);
 }

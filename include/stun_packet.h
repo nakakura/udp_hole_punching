@@ -5,12 +5,14 @@
 #include <cstdint>
 #include <vector>
 
+#include "istun_packet.h"
+
 /**
  * STUNパケット生成クラス
  *
  * RFC 5389に準拠したSTUN Binding Requestパケットを生成する
  */
-class StunPacketBuilder {
+class STUNPacketBuilder : public ISTUNPacketBuilder {
  private:
   // STUN Message Constants (RFC 5389)
   static const uint16_t kStunMessageTypeBindingRequest = 0x0001U;
@@ -27,7 +29,7 @@ class StunPacketBuilder {
    *
    * @return STUNパケットのバイト列
    */
-  static auto CreateBindingRequest() -> std::vector<uint8_t>;
+  auto CreateBindingRequest() -> std::vector<uint8_t> override;
 };
 
 #endif  // STUN_PACKET_H

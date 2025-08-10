@@ -5,7 +5,7 @@
 #include <vector>
 
 // STUN Binding Requestパケットを生成
-auto StunPacketBuilder::CreateBindingRequest() -> std::vector<uint8_t> {
+auto STUNPacketBuilder::CreateBindingRequest() -> std::vector<uint8_t> {
   std::vector<uint8_t> packet(kStunHeaderSize, 0x00);
 
   // Message Type: Binding Request (RFC 5389) - ビッグエンディアンで直接設定
