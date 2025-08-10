@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include "iudp_socket.h"
+
 /**
  * UDPソケット管理クラス
  *
@@ -19,7 +21,7 @@
  * RAII原則に従い、ソケットの生成・破棄を自動管理する
  * libuvを使用して非同期I/Oを実現
  */
-class UDPSocket {
+class UDPSocket : public IUdpSocket {
  public:
   /**
    * UDPソケットを作成
@@ -29,7 +31,7 @@ class UDPSocket {
   /**
    * デストラクタ - ソケットを自動クローズ
    */
-  ~UDPSocket();
+  ~UDPSocket() override;
 
   // Rule of Five: コピー・ムーブを明示的に削除
   // UDPSocketはlibuvリソースを管理するRAIIクラスのため、
@@ -39,42 +41,13 @@ class UDPSocket {
   UDPSocket(UDPSocket&&) = delete;
   auto operator=(UDPSocket&&) -> UDPSocket& = delete;
 
-  /**
-   * ソケットが正常に作成されているかチェック
-   *
-   * @return true: ソケット作成済み, false: 作成失敗または未作成
-   */
-  auto IsValid() const -> bool;
-
-  /**
-   * ローカルポート番号を取得
-   *
-   * @return ローカルポート番号（0の場合は取得失敗）
-   */
-  auto GetLocalPort() const -> int;
-
-  /**
-   * UDPパケットを指定したアドレスに送信
-   *
-   * @param data 送信するデータ
-   * @param ip 送信先IPアドレス
-   * @param port 送信先ポート番号
-   * @return true: 送信成功, false: 送信失敗
-   */
+  // Override IUdpSocket methods with improvements
+  [[nodiscard]] auto IsValid() const -> bool override;
+  [[nodiscard]] auto GetLocalPort() const -> int override;
   auto SendTo(const std::vector<uint8_t>& data, const std::string& ip,
-              int port) -> bool;
-
-  /**
-   * UDPパケットを受信（タイムアウト付き）
-   *
-   * @param data 受信したデータ
-   * @param sender_ip 送信者IPアドレス
-   * @param sender_port 送信者ポート番号
-   * @param timeout_ms タイムアウト（ミリ秒）
-   * @return true: 受信成功, false: 受信失敗またはタイムアウト
-   */
+              int port) -> bool override;
   auto ReceiveFrom(std::vector<uint8_t>& data, std::string& sender_ip,
-                   int& sender_port, int timeout_ms) -> bool;
+                   int& sender_port, int timeout_ms) -> bool override;
 
  private:
   std::unique_ptr<uv_loop_t> loop_;

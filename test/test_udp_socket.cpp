@@ -849,3 +849,30 @@ TEST_F(UDPSocketTest, TimeoutDetectionTest) {
   EXPECT_LT(completed_operations.load(), target_operations)
       << "All operations completed unexpectedly";
 }
+
+/**
+ * IUDPSocket経由でのUDPSocketの動作確認テスト（型消去を使用）
+ */
+TEST_F(UDPSocketTest, TypeErasureTest) {
+  // IUDPSocket型でUDPSocketを操作する
+  std::unique_ptr<IUdpSocket> socket = std::make_unique<UDPSocket>();
+
+  // ソケットが有効であることを確認
+  EXPECT_TRUE(socket->IsValid());
+
+  // ローカルポート番号を取得
+  int port = socket->GetLocalPort();
+  EXPECT_GT(port, 0);
+
+  // データ送信と受信のテスト（簡易的な例）
+  std::vector<uint8_t> data_to_send = {1, 2, 3, 4};
+  std::string ip = "127.0.0.1";
+  int send_port = 12345;
+  EXPECT_TRUE(socket->SendTo(data_to_send, ip, send_port));
+
+  std::vector<uint8_t> received_data;
+  std::string sender_ip;
+  int sender_port;
+  EXPECT_FALSE(socket->ReceiveFrom(received_data, sender_ip, sender_port,
+                                   100));  // タイムアウトを設定
+}
